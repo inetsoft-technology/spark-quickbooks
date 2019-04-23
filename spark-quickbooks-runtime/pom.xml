@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2019, InetSoft Technology Corp, All Rights Reserved.
+  ~
+  ~ The software and information contained herein are copyrighted and
+  ~ proprietary to InetSoft Technology Corp. This software is furnished
+  ~ pursuant to a written license agreement and may be used, copied,
+  ~ transmitted, and stored only in accordance with the terms of such
+  ~ license and with the inclusion of the above copyright notice. Please
+  ~ refer to the file "COPYRIGHT" for further copyright and licensing
+  ~ information. This software and information or any other copies
+  ~ thereof may not be provided or otherwise made available to any other
+  ~ person.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.inetsoft.connectors</groupId>
+    <artifactId>spark-quickbooks-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>spark-quickbooks-runtime</artifactId>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.intuit.quickbooks-online</groupId>
+      <artifactId>ipp-v3-java-data</artifactId>
+      <version>4.0.9</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.intuit.quickbooks-online</groupId>
+      <artifactId>ipp-v3-java-devkit</artifactId>
+      <classifier>jar-with-dependencies</classifier>
+      <version>4.0.9</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.intuit.quickbooks-online</groupId>
+      <artifactId>oauth2-platform-api</artifactId>
+      <classifier>jar-with-dependencies</classifier>
+      <version>4.0.9</version>
+    </dependency>
+    <dependency>
+      <groupId>com.inetsoft.connectors</groupId>
+      <artifactId>spark-quickbooks-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+</project>
