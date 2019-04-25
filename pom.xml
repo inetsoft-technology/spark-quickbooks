@@ -1,17 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Copyright (c) 2019, InetSoft Technology Corp, All Rights Reserved.
-  ~
-  ~ The software and information contained herein are copyrighted and
-  ~ proprietary to InetSoft Technology Corp. This software is furnished
-  ~ pursuant to a written license agreement and may be used, copied,
-  ~ transmitted, and stored only in accordance with the terms of such
-  ~ license and with the inclusion of the above copyright notice. Please
-  ~ refer to the file "COPYRIGHT" for further copyright and licensing
-  ~ information. This software and information or any other copies
-  ~ thereof may not be provided or otherwise made available to any other
-  ~ person.
-  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -22,6 +9,28 @@
   <groupId>com.inetsoft.connectors</groupId>
   <artifactId>spark-quickbooks-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
+
+  <name>Spark QuickBooks Connector</name>
+  <description>QuickBooks Online connector for Spark SQL.</description>
+  <url>https://github.com/inetsoft-technology/spark-quickbooks/</url>
+
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>InetSoft Technology</name>
+    <url>https://www.inetsoft.com/</url>
+  </organization>
+
+  <scm>
+    <connection>scm:git:https://github.com/inetsoft-technology/spark-quickbooks.git</connection>
+    <developerConnection>scm:git:https://github.com/inetsoft-technology/spark-quickbooks.git</developerConnection>
+    <url>https://github.com/inetsoft-technology/spark-quickbooks/tree/master</url>
+  </scm>
 
   <properties>
     <spark.version>2.3.2</spark.version>
@@ -35,4 +44,52 @@
     <module>spark-quickbooks-runtime</module>
     <module>spark-quickbooks</module>
   </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <useReleaseProfile>false</useReleaseProfile>
+            <releaseProfiles>release</releaseProfiles>
+            <goals>deploy</goals>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>nexus-staging-maven-plugin</artifactId>
+          <version>1.6.8</version>
+          <extensions>true</extensions>
+          <configuration>
+            <serverId>ossrh</serverId>
+            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

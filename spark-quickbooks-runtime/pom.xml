@@ -1,17 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Copyright (c) 2019, InetSoft Technology Corp, All Rights Reserved.
-  ~
-  ~ The software and information contained herein are copyrighted and
-  ~ proprietary to InetSoft Technology Corp. This software is furnished
-  ~ pursuant to a written license agreement and may be used, copied,
-  ~ transmitted, and stored only in accordance with the terms of such
-  ~ license and with the inclusion of the above copyright notice. Please
-  ~ refer to the file "COPYRIGHT" for further copyright and licensing
-  ~ information. This software and information or any other copies
-  ~ thereof may not be provided or otherwise made available to any other
-  ~ person.
-  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -26,6 +13,26 @@
   </parent>
 
   <artifactId>spark-quickbooks-runtime</artifactId>
+
+  <name>Spark QuickBooks Connector Runtime</name>
+  <description>
+    The runtime implementation of the Spark QuickBooks connector. This library is isolated from
+    the rest of the connector because the QuickBooks Online libraries have dependencies that
+    conflict with Spark and need to be on an isolated classpath.
+  </description>
+  <url>https://github.com/inetsoft-technology/spark-quickbooks/</url>
+
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>InetSoft Technology</name>
+    <url>https://www.inetsoft.com/</url>
+  </organization>
 
   <dependencies>
     <dependency>
@@ -63,4 +70,66 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

@@ -1,15 +1,17 @@
 /*
- * Copyright (c) 2019, InetSoft Technology Corp, All Rights Reserved.
+ * Copyright 2019 InetSoft Technology
  *
- * The software and information contained herein are copyrighted and
- * proprietary to InetSoft Technology Corp. This software is furnished
- * pursuant to a written license agreement and may be used, copied,
- * transmitted, and stored only in accordance with the terms of such
- * license and with the inclusion of the above copyright notice. Please
- * refer to the file "COPYRIGHT" for further copyright and licensing
- * information. This software and information or any other copies
- * thereof may not be provided or otherwise made available to any other
- * person.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package inetsoft.spark.quickbooks;
 
