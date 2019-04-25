@@ -1,7 +1,11 @@
 # Spark Quickbooks Connector
+
+Build status: [![build_status](https://travis-ci.org/inetsoft-technology/spark-quickbooks?branch=master)](https://travis-ci.org/inetsoft-technology/spark-quickbooks)
+
 Spark SQL 2.3.2 Connector for QuickBooks Online
 
 ## Requirements
+
 QuickBooks Online uses OAuth 2.0 for authorization to query their API. You will need to
 create keys as described in the [Authentication and Authorization Guide](https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/oauth-2.0#obtain-oauth2-credentials-for-your-app)
 
@@ -13,7 +17,9 @@ The data source is implemented as `DataSourceV2` which cannot be accessed throug
 in Spark 2.3.2. You will need to use the Java or Scala API to use this connector.
 
 ## Installation
+
 Add the JARs as dependencies
+
 #### Spark Data Source
 ```
 groupId: com.inetsoft.connectors
@@ -31,14 +37,14 @@ version: 1.0.0-SNAPSHOT
 
 ## Options
 
-|Option|Description|
-|---|---|
-|authorizationCode|OAuth Authorization Code|
-|companyId|QuickBooks Online Company ID|
-|clientId|OAuth Client ID|
-|clientSecret|OAuthClientSecret|
-|redirectUri|HTTPS endpoint for OAuth redirect|
-|entity|Object to query from the API|
+| Option            | Description                       |
+| ----------------- |---------------------------------- |
+| authorizationCode | OAuth Authorization Code          |
+| companyId         | QuickBooks Online Company ID      |
+| clientId          | OAuth Client ID                   |
+| clientSecret      | OAuthClientSecret                 |
+| redirectUri       | HTTPS endpoint for OAuth redirect |
+| entity            | Object to query from the API      |
 
 * `authorizationCode`: Exchanged for access/refresh tokens
 * `companyId`: Also called `realmId`, it's the ID of the company that you want to query in QuickBooks
@@ -47,6 +53,7 @@ version: 1.0.0-SNAPSHOT
 * `redirectUri`: Also in the **Keys** tab, this need to be HTTPS in production and cannot be localhost
   * Default: `https://developer.intuit.com/v2/OAuth2Playground/RedirectUrl`
 * `entity`: Due to the nature of the QuickBooks Online query syntax, only 1 entity may be queried at a time.
+
 We take this entity and pass it as the query `select * from <entity>` and then create a data frame
 from the result set to query against with Spark SQL
 
