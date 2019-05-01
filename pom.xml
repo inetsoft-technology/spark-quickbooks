@@ -23,6 +23,19 @@
     <url>https://www.inetsoft.com/</url>
   </organization>
 
+  <developers>
+    <developer>
+      <name>Eric Lee</name>
+      <email>eric.lee@inetsoft.com</email>
+      <organization>InetSoft Technology</organization>
+    </developer>
+    <developer>
+      <name>Jason Shobe</name>
+      <email>jason.shobe@inetsoft.com</email>
+      <organization>InetSoft Technology</organization>
+    </developer>
+  </developers>
+
   <scm>
     <connection>scm:git:https://github.com/inetsoft-technology/spark-quickbooks.git</connection>
     <developerConnection>scm:git:https://github.com/inetsoft-technology/spark-quickbooks.git</developerConnection>
@@ -96,6 +109,19 @@
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>nexus-staging-maven-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>

@@ -28,6 +28,19 @@
     <url>https://www.inetsoft.com/</url>
   </organization>
 
+  <developers>
+    <developer>
+      <name>Eric Lee</name>
+      <email>eric.lee@inetsoft.com</email>
+      <organization>InetSoft Technology</organization>
+    </developer>
+    <developer>
+      <name>Jason Shobe</name>
+      <email>jason.shobe@inetsoft.com</email>
+      <organization>InetSoft Technology</organization>
+    </developer>
+  </developers>
+
   <scm>
     <connection>scm:git:https://github.com/inetsoft-technology/spark-quickbooks.git</connection>
     <developerConnection>scm:git:https://github.com/inetsoft-technology/spark-quickbooks.git</developerConnection>
