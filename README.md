@@ -24,15 +24,15 @@ Add the JARs as dependencies
 ```
 groupId: com.inetsoft.connectors
 artifactId: spark-quickbooks
-version: 1.0.0-SNAPSHOT
+version: 1.0.1-SNAPSHOT
 classifier: bundle
 ```
 
-#### QuickBooks Runtime
+#### QuickBooks API
 ```
 groupId: com.inetsoft.connectors
 artifactId: spark-quickbooks-api
-version: 1.0.0-SNAPSHOT
+version: 1.0.1-SNAPSHOT
 ```
 
 ## Options
