@@ -1,6 +1,6 @@
 # Spark Quickbooks Connector
 
-Build status: [![Build Status](https://travis-ci.com/inetsoft-technology/spark-quickbooks.svg?branch=master)](https://travis-ci.org/inetsoft-technology/spark-quickbooks)
+Build status: [![Build Status](https://travis-ci.com/inetsoft-technology/spark-quickbooks.svg?branch=master)](https://travis-ci.com/inetsoft-technology/spark-quickbooks)
 
 Spark SQL 2.3.2 Connector for QuickBooks Online
 
