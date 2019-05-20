@@ -24,7 +24,7 @@ Add the JARs as dependencies
 ```
 groupId: com.inetsoft.connectors
 artifactId: spark-quickbooks
-version: 1.0.1-SNAPSHOT
+version: 1.0.0-SNAPSHOT
 classifier: bundle
 ```
 
@@ -32,7 +32,7 @@ classifier: bundle
 ```
 groupId: com.inetsoft.connectors
 artifactId: spark-quickbooks-api
-version: 1.0.1-SNAPSHOT
+version: 1.0.0-SNAPSHOT
 ```
 
 ## Options
