@@ -15,7 +15,7 @@
  */
 package inetsoft.spark.quickbooks.source;
 
-import inetsoft.spark.quickbooks.QuickbooksConfig;
+import inetsoft.spark.quickbooks.QuickbooksUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,7 @@ public class QuickbooksClassloader extends URLClassLoader {
       final URL location =
          QuickbooksClassloader.class.getProtectionDomain().getCodeSource().getLocation();
       final File quickbooksJar = new File(location.toURI());
-      final File libDir = new File(QuickbooksConfig.getQbLibDir());
+      final File libDir = new File(QuickbooksUtil.getQbLibDir());
 
       if(libDir.mkdir() || libDir.lastModified() < quickbooksJar.lastModified()) {
          final JarFile jarFile = new JarFile(quickbooksJar);

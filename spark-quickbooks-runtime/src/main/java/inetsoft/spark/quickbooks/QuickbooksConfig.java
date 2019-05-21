@@ -38,10 +38,6 @@ public class QuickbooksConfig {
       this.expiration = expiration;
    }
 
-   public static String getQbLibDir() {
-      return qbLibDir;
-   }
-
    public static QuickbooksConfig readConfig(String clientId, String companyId) {
       final File file = getConfigFile(clientId, companyId);
 
@@ -106,13 +102,7 @@ public class QuickbooksConfig {
    }
 
    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-   private static final String qbLibDir;
-
-   static {
-      final String envLib = System.getenv("QUICKBOOKS_LIB");
-      qbLibDir = (envLib != null) ? envLib : (System.getProperty("user.home") + "/quickbooks-lib");
-   }
-
+   private static final String qbLibDir = QuickbooksUtil.getQbLibDir();
    private final String accessToken;
    private final String refreshToken;
    private final long expiration;

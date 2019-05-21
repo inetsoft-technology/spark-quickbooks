@@ -28,7 +28,7 @@ version: 1.0.0-SNAPSHOT
 classifier: bundle
 ```
 
-#### QuickBooks Runtime
+#### QuickBooks API
 ```
 groupId: com.inetsoft.connectors
 artifactId: spark-quickbooks-api
