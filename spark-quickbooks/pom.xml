@@ -61,6 +61,7 @@
       <groupId>com.inetsoft.connectors</groupId>
       <artifactId>spark-quickbooks-runtime</artifactId>
       <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.inetsoft.connectors</groupId>
