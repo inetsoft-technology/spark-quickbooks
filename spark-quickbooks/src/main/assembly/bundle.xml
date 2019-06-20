@@ -17,6 +17,11 @@
       <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>quickbooks-lib</outputDirectory>
       <useTransitiveDependencies>true</useTransitiveDependencies>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
+      <includes>
+        <include>com.inetsoft.connectors:spark-quickbooks-runtime</include>
+      </includes>
+      <scope>provided</scope>
     </dependencySet>
   </dependencySets>
 
