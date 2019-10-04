@@ -38,9 +38,10 @@ public class QuickbooksReader implements DataSourceReader {
                     String authorizationCode,
                     String companyId,
                     String redirectUrl,
+                    String apiUrl,
                     String entity)
    {
-      reader = new QuickbooksStreamReader(clientId, clientSecret, authorizationCode, companyId, redirectUrl, entity);
+      reader = new QuickbooksStreamReader(clientId, clientSecret, authorizationCode, companyId, apiUrl, redirectUrl, entity);
    }
 
    @Override

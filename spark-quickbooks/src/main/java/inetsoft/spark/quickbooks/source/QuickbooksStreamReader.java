@@ -33,6 +33,7 @@ public class QuickbooksStreamReader implements Serializable {
                                  String authorizationCode,
                                  String companyId,
                                  String redirectUrl,
+                                 String apiUrl,
                                  String entity)
    {
       this.clientId = clientId;
@@ -40,6 +41,7 @@ public class QuickbooksStreamReader implements Serializable {
       this.authorizationCode = authorizationCode;
       this.companyId = companyId;
       this.redirectUrl = redirectUrl;
+      this.apiUrl = apiUrl;
       this.entity = entity;
    }
 
@@ -51,7 +53,7 @@ public class QuickbooksStreamReader implements Serializable {
             classLoader.loadClass("inetsoft.spark.quickbooks.QuickbooksRuntime");
          final QuickbooksAPI api = (QuickbooksAPI) aClass.newInstance();
          final QuickbooksAPI.QuickbooksQueryResult result =
-            api.loadData(clientId, clientSecret, authorizationCode, companyId, redirectUrl, entity);
+            api.loadData(clientId, clientSecret, authorizationCode, companyId, apiUrl, redirectUrl, entity);
          return Collections.unmodifiableList(result.getEntities());
       }
       catch(Exception e) {
@@ -66,5 +68,6 @@ public class QuickbooksStreamReader implements Serializable {
    private final String authorizationCode;
    private final String companyId;
    private final String redirectUrl;
+   private final String apiUrl;
    private final String entity;
 }

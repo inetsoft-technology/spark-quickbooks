@@ -23,6 +23,7 @@ public interface QuickbooksAPI {
                                   String authorizationCode,
                                   String companyID,
                                   String redirectUrl,
+                                  String apiUrl,
                                   String entity);
 
    interface QuickbooksQueryResult {

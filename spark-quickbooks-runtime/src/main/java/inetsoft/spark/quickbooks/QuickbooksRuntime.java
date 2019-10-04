@@ -40,6 +40,7 @@ public class QuickbooksRuntime implements QuickbooksAPI {
                                          String authorizationCode,
                                          String companyId,
                                          String redirectUrl,
+                                         String apiUrl,
                                          String entity)
    {
       this.clientId = clientId;
@@ -47,6 +48,7 @@ public class QuickbooksRuntime implements QuickbooksAPI {
       this.authorizationCode = authorizationCode;
       this.companyId = companyId;
       this.redirectUrl = redirectUrl;
+      this.apiUrl = apiUrl;
       this.entity = entity;
       return loadData(QuickbooksConfig.readConfig(clientId, companyId));
    }
@@ -92,8 +94,7 @@ public class QuickbooksRuntime implements QuickbooksAPI {
                                String companyId,
                                String accessToken) throws FMSException
    {
-      final String URL = "https://sandbox-quickbooks.api.intuit.com/v3/company";
-      Config.setProperty(Config.BASE_URL_QBO, URL);
+      Config.setProperty(Config.BASE_URL_QBO, apiUrl);
       OAuth2Authorizer oauth = new OAuth2Authorizer(accessToken);
       Context context = new Context(oauth, ServiceType.QBO, companyId);
       DataService service = new DataService(context);
@@ -168,5 +169,6 @@ public class QuickbooksRuntime implements QuickbooksAPI {
    private String authorizationCode;
    private String companyId;
    private String redirectUrl;
+   private String apiUrl;
    private String entity;
 }
