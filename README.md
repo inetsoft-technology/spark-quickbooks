@@ -24,7 +24,7 @@ Add the JARs as dependencies
 ```
 groupId: com.inetsoft.connectors
 artifactId: spark-quickbooks
-version: 1.0.1
+version: 1.0.2
 classifier: bundle
 ```
 
@@ -32,7 +32,7 @@ classifier: bundle
 ```
 groupId: com.inetsoft.connectors
 artifactId: spark-quickbooks-api
-version: 1.0.1
+version: 1.0.2
 ```
 
 ## Options
@@ -45,6 +45,7 @@ version: 1.0.1
 | clientSecret      | OAuthClientSecret                 |
 | redirectUri       | HTTPS endpoint for OAuth redirect |
 | entity            | Object to query from the API      |
+| production        | Query production environment      |
 
 * `authorizationCode`: Exchanged for access/refresh tokens
 * `companyId`: Also called `realmId`, it's the ID of the company that you want to query in QuickBooks
@@ -53,6 +54,7 @@ version: 1.0.1
 * `redirectUri`: Also in the **Keys** tab, this need to be HTTPS in production and cannot be localhost
   * Default: `https://developer.intuit.com/v2/OAuth2Playground/RedirectUrl`
 * `entity`: Due to the nature of the QuickBooks Online query syntax, only 1 entity may be queried at a time.
+* `production`: set to `true` when switching from a sandbox to production environment
 
 We take this entity and pass it as the query `select * from <entity>` and then create a data frame
 from the result set to query against with Spark SQL
