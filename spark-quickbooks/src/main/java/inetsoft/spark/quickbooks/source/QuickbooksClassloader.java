@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.lang.invoke.MethodHandles;
 import java.net.*;
+import java.nio.file.*;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -43,24 +44,12 @@ public class QuickbooksClassloader extends URLClassLoader {
       final File libDir = new File(QuickbooksUtil.getQbLibDir());
 
       if(libDir.mkdir() || libDir.lastModified() < quickbooksJar.lastModified()) {
+         deleteOldJars();
          final JarFile jarFile = new JarFile(quickbooksJar);
          final ArrayList<JarEntry> entries = Collections.list(jarFile.entries());
 
          for(JarEntry jarEntry : entries) {
-            if(!jarEntry.isDirectory() && jarEntry.getName().startsWith("quickbooks-lib/")) {
-               final File file = new File(libDir.getParent(), jarEntry.getName());
-               final InputStream jarInputStream = jarFile.getInputStream(jarEntry);
-
-               try(BufferedInputStream in = new BufferedInputStream(jarInputStream);
-                   BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file)))
-               {
-                  int read;
-
-                  while((read = in.read()) != -1) {
-                     out.write(read);
-                  }
-               }
-            }
+            extractToLibFolder(libDir, jarFile, jarEntry);
          }
 
          jarFile.close();
@@ -140,6 +129,43 @@ public class QuickbooksClassloader extends URLClassLoader {
       }
 
       return null;
+   }
+
+   private static void extractToLibFolder(File libDir, JarFile jarFile, JarEntry jarEntry)
+      throws IOException
+   {
+      if(!jarEntry.isDirectory() && jarEntry.getName().startsWith("quickbooks-lib/")) {
+         final File file = new File(libDir.getParent(), jarEntry.getName());
+         final InputStream jarInputStream = jarFile.getInputStream(jarEntry);
+
+         try(BufferedInputStream in = new BufferedInputStream(jarInputStream);
+             BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file)))
+         {
+            int read;
+
+            while((read = in.read()) != -1) {
+               out.write(read);
+            }
+         }
+      }
+   }
+
+   /**
+    * Delete all JAR files from the lib folder so the dependencies can be replaced
+    */
+   private static void deleteOldJars() throws IOException {
+      Files.walk(Paths.get(QuickbooksUtil.getQbLibDir()))
+           .filter(path -> path.toString().endsWith(".jar"))
+           .forEach(QuickbooksClassloader::deleteJarFile);
+   }
+
+   private static void deleteJarFile(Path path) {
+      try {
+         Files.deleteIfExists(path);
+      }
+      catch(IOException e) {
+         LOG.error("Failed to delete JAR", e);
+      }
    }
 
    private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
