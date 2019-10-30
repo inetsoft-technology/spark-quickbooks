@@ -15,8 +15,7 @@
  */
 package inetsoft.spark.quickbooks.source;
 
-import inetsoft.spark.quickbooks.SparkSchema;
-import inetsoft.spark.quickbooks.SparkSchemaGenerator;
+import inetsoft.spark.quickbooks.*;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema;
 import org.apache.spark.sql.sources.v2.reader.*;
@@ -38,10 +37,10 @@ public class QuickbooksReader implements DataSourceReader {
                     String authorizationCode,
                     String companyId,
                     String redirectUrl,
-                    String apiUrl,
+                    boolean production,
                     String entity)
    {
-      reader = new QuickbooksStreamReader(clientId, clientSecret, authorizationCode, companyId, apiUrl, redirectUrl, entity);
+      reader = new QuickbooksStreamReader(clientId, clientSecret, authorizationCode, companyId, redirectUrl, production, entity);
    }
 
    @Override

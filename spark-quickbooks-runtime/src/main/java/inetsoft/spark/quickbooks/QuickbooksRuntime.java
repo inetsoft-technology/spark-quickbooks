@@ -40,7 +40,7 @@ public class QuickbooksRuntime implements QuickbooksAPI {
                                          String authorizationCode,
                                          String companyId,
                                          String redirectUrl,
-                                         String apiUrl,
+                                         boolean production,
                                          String entity)
    {
       this.clientId = clientId;
@@ -48,7 +48,7 @@ public class QuickbooksRuntime implements QuickbooksAPI {
       this.authorizationCode = authorizationCode;
       this.companyId = companyId;
       this.redirectUrl = redirectUrl;
-      this.apiUrl = apiUrl;
+      this.production = production;
       this.entity = entity;
       return loadData(QuickbooksConfig.readConfig(clientId, companyId));
    }
@@ -64,7 +64,7 @@ public class QuickbooksRuntime implements QuickbooksAPI {
 
          // check tokens
          OAuth2Config oauth2Config = new OAuth2Config.OAuth2ConfigBuilder(clientId, clientSecret)
-            .callDiscoveryAPI(Environment.SANDBOX)
+            .callDiscoveryAPI(production ? Environment.PRODUCTION : Environment.SANDBOX)
             .buildConfig();
          client = new OAuth2PlatformClient(oauth2Config);
          final String accessToken = connect(config);
@@ -94,6 +94,7 @@ public class QuickbooksRuntime implements QuickbooksAPI {
                                String companyId,
                                String accessToken) throws FMSException
    {
+      final String apiUrl = production ? productionUrl : sandboxUrl;
       Config.setProperty(Config.BASE_URL_QBO, apiUrl);
       OAuth2Authorizer oauth = new OAuth2Authorizer(accessToken);
       Context context = new Context(oauth, ServiceType.QBO, companyId);
@@ -162,6 +163,8 @@ public class QuickbooksRuntime implements QuickbooksAPI {
       private QueryResult queryResult;
    }
 
+   private static final String sandboxUrl = "https://sandbox-quickbooks.api.intuit.com/v3/company";
+   private static final String productionUrl = "https://quickbooks.api.intuit.com/v3/company";
    private final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
    private OAuth2PlatformClient client;
    private String clientId;
@@ -169,6 +172,6 @@ public class QuickbooksRuntime implements QuickbooksAPI {
    private String authorizationCode;
    private String companyId;
    private String redirectUrl;
-   private String apiUrl;
+   private boolean production;
    private String entity;
 }
