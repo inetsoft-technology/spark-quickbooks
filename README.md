@@ -1,17 +1,19 @@
 # Spark Quickbooks Connector
 
-Build status: [![Build Status](https://travis-ci.com/inetsoft-technology/spark-quickbooks.svg?branch=master)](https://travis-ci.com/inetsoft-technology/spark-quickbooks)
+Build status: [![Build Status](https://travis-ci.com/inetsoft-technology/spark-quickbooks.svg?branch=master)][1]
 
 Spark SQL 2.3.2 Connector for QuickBooks Online
 
 ## Requirements
 
 QuickBooks Online uses OAuth 2.0 for authorization to query their API. You will need to
-create keys as described in the [Authentication and Authorization Guide](https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/oauth-2.0#obtain-oauth2-credentials-for-your-app)
+create keys as described in the [Authentication and Authorization Guide][2]
 
 If the account is set up correctly you will be able to generate tokens and make API calls in the
-[OAuth 2.0 Playground](https://developer.intuit.com/v2/ui#/playground). Note that the authorization
-code is one time use so if you need new tokens you will need to first get a new authorization code.
+[OAuth 2.0 Playground][3]
+
+Note that the authorization code is one time use so if you need new tokens you will need to first
+get a new authorization code.
 
 The data source is implemented as `DataSourceV2` which cannot be accessed through the SQL syntax
 in Spark 2.3.2. You will need to use the Java or Scala API to use this connector.
@@ -59,3 +61,6 @@ version: 1.0.3
 We take this entity and pass it as the query `select * from <entity>` and then create a data frame
 from the result set to query against with Spark SQL
 
+[1]:https://travis-ci.com/inetsoft-technology/spark-quickbooks
+[2]:https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/oauth-2.0#obtain-oauth2-credentials-for-your-app
+[3]:https://developer.intuit.com/app/developer/playground
