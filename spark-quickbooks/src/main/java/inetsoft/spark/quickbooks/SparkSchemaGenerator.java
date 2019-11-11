@@ -89,7 +89,7 @@ public class SparkSchemaGenerator {
 
       // primitive or primitive wrapper
       if(!type.sameType(DataTypes.BinaryType)) {
-         field = new StructField(propertyName, type, !propertyType.isPrimitive(), Metadata.empty());
+         field = new StructField(propertyName, type, true, Metadata.empty());
          schema.addSchema(propertyName, new SparkSchema());
       }
       // object
@@ -104,7 +104,6 @@ public class SparkSchemaGenerator {
             final SparkSchema nestedSchema = generateSchema(propertyValue);
             final StructType structType = nestedSchema.getStructType();
             schema.addSchema(propertyName, nestedSchema);
-            schema.setStructType(propertyName, structType);
             field = new StructField(propertyName, structType, true, Metadata.empty());
          }
       }
@@ -120,8 +119,8 @@ public class SparkSchemaGenerator {
       StructField field;
       final SparkSchema sparkSchema = generateSchema(children.toArray());
       schema.addSchema(propertyName, sparkSchema);
+      sparkSchema.setArraySize(children.size());
       final StructType complexStructType = sparkSchema.getStructType();
-      schema.setStructType(propertyName, complexStructType);
       field = new StructField(propertyName,
                               DataTypes.createArrayType(complexStructType, true),
                               true,
