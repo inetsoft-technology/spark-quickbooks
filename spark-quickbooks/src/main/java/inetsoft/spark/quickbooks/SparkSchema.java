@@ -46,13 +46,13 @@ public class SparkSchema implements Serializable {
          String prefixedKey = parent + key;
 
          if(structType.nonEmpty()) {
-            final int arraySize = schema.getArraySize();
+            final int schemaArraySize = schema.getArraySize();
 
-            if(arraySize == 0) {
+            if(schemaArraySize == 0) {
                flattenStruct(schemas, structFields, newSchemas, key, schema, prefixedKey);
             }
             else {
-               for(int i = 0; i < arraySize; i++) {
+               for(int i = 0; i < schemaArraySize; i++) {
                   final String newKeyName = prefixedKey + "_" + i;
                   flattenStruct(schemas, structFields, newSchemas, key, schema, newKeyName);
                }

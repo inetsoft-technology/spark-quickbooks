@@ -62,7 +62,6 @@ public class SparkSchemaGenerator {
                structType = structType.merge(s);
                sparkSchema.setStructType(structType);
                sparkSchema.setMethodName(propertyName, readMethod.getName());
-               LOG.debug(structType.toString());
             }
          }
       }
@@ -118,8 +117,8 @@ public class SparkSchemaGenerator {
    private StructField createArrayField(String propertyName, Collection children, SparkSchema schema) {
       StructField field;
       final SparkSchema sparkSchema = generateSchema(children.toArray());
-      schema.addSchema(propertyName, sparkSchema);
       sparkSchema.setArraySize(children.size());
+      schema.addSchema(propertyName, sparkSchema);
       final StructType complexStructType = sparkSchema.getStructType();
       field = new StructField(propertyName,
                               DataTypes.createArrayType(complexStructType, true),
@@ -191,5 +190,5 @@ public class SparkSchemaGenerator {
       }
    }
 
-   private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 }

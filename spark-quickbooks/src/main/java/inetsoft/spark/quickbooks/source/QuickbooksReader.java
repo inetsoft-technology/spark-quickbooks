@@ -39,8 +39,10 @@ public class QuickbooksReader implements DataSourceReader {
                     String companyId,
                     String redirectUrl,
                     boolean production,
+                    boolean expandArrays,
                     String entity)
    {
+      this.expandArrays = expandArrays;
       reader = new QuickbooksStreamReader(clientId, clientSecret, authorizationCode, companyId, redirectUrl, production, entity);
    }
 
@@ -54,19 +56,14 @@ public class QuickbooksReader implements DataSourceReader {
       return schema.getStructType();
    }
 
-   private SparkSchema getSparkSchema(List<Object> entities) {
-      try {
-         return sparkSchemaGenerator.generateSchema(entities.toArray()).flatten();
-      }
-      catch(Exception e) {
-         LOG.error("Failed to generate schema for {}", getClass(), e);
-         throw new RuntimeException(e);
-      }
-   }
-
    @Override
    public List<DataReaderFactory<Row>> createDataReaderFactories() {
       return Arrays.asList(new QuickbooksReaderFactory(schema, reader));
+   }
+
+   private SparkSchema getSparkSchema(List<Object> entities) {
+      final SparkSchema sparkSchema = sparkSchemaGenerator.generateSchema(entities.toArray());
+      return expandArrays ? sparkSchema.flatten() : sparkSchema;
    }
 
    private static class TaskDataReader implements DataReader<Row> {
@@ -148,15 +145,13 @@ public class QuickbooksReader implements DataSourceReader {
                      final int index;
                      final int size = ((Collection) result).size();
 
-                     if(size == 0) {
-                        return null;
-                     }
-                     else if(size > 1) {
+                     if(size > 0) {
+                        // parse index and skip to next token
                         index = Integer.parseInt(token);
                         token = tokens[++i];
                      }
                      else {
-                        index = 0;
+                        return null;
                      }
 
                      // arrays must have consistent schema but projecting the schema onto the
@@ -188,8 +183,7 @@ public class QuickbooksReader implements DataSourceReader {
          if(field.dataType() instanceof ArrayType) {
             final ArrayList<Object> childCells = new ArrayList<>();
             final Iterator<?> iterator = ((Collection<?>) result).iterator();
-            SparkSchema finalSchema = schema;
-            iterator.forEachRemaining(obj -> childCells.add(createRow(obj, finalSchema)));
+            iterator.forEachRemaining(obj -> childCells.add(createRow(obj, schema)));
             result = childCells.toArray();
          }
          if(field.dataType() instanceof StructType) {
@@ -215,7 +209,7 @@ public class QuickbooksReader implements DataSourceReader {
             return method.invoke(bean);
          }
          catch(NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            LOG.error("Failed to get data from object", e);
+            LOG.warn("Failed to get data from object, using null", e);
             return null;
          }
       }
@@ -244,8 +238,9 @@ public class QuickbooksReader implements DataSourceReader {
       private SparkSchema schema;
    }
 
-   private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
    private final SparkSchemaGenerator sparkSchemaGenerator = new SparkSchemaGenerator();
    private final QuickbooksStreamReader reader;
+   private final boolean expandArrays;
    private SparkSchema schema = null;
 }

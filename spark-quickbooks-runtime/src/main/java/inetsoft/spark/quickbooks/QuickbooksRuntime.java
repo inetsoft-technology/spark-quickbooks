@@ -15,8 +15,7 @@
  */
 package inetsoft.spark.quickbooks;
 
-import com.intuit.ipp.core.Context;
-import com.intuit.ipp.core.ServiceType;
+import com.intuit.ipp.core.*;
 import com.intuit.ipp.exception.FMSException;
 import com.intuit.ipp.security.OAuth2Authorizer;
 import com.intuit.ipp.services.DataService;
@@ -68,15 +67,14 @@ public class QuickbooksRuntime implements QuickbooksAPI {
             .buildConfig();
          client = new OAuth2PlatformClient(oauth2Config);
          final String accessToken = connect(config);
-         return execute(accessToken);
+         final QueryResult queryResult = execute(accessToken);
+         return new QueryResultAdapter(queryResult);
       }
       catch(OAuthException e) {
-         LOG.error("OAuth authentication failed", e);
-         throw new RuntimeException(e);
+         throw new RuntimeException("OAuth authentication failed", e);
       }
       catch(FMSException e) {
-         LOG.error("SDK exception", e);
-         throw new RuntimeException(e);
+         throw new RuntimeException("SDK exception", e);
       }
       finally {
          // switch back to original classloader
@@ -84,22 +82,45 @@ public class QuickbooksRuntime implements QuickbooksAPI {
       }
    }
 
-   private QuickbooksQueryResult execute(String accessToken) throws FMSException {
-      final String query = "select * from " + entity;
-      final QueryResult result = execute(query, companyId, accessToken);
-      return new QueryResultAdapter(result);
-   }
-
-   private QueryResult execute(String query,
-                               String companyId,
-                               String accessToken) throws FMSException
-   {
+   private QueryResult execute(String accessToken) throws FMSException {
       final String apiUrl = production ? productionUrl : sandboxUrl;
       Config.setProperty(Config.BASE_URL_QBO, apiUrl);
-      OAuth2Authorizer oauth = new OAuth2Authorizer(accessToken);
-      Context context = new Context(oauth, ServiceType.QBO, companyId);
-      DataService service = new DataService(context);
-      return service.executeQuery(query);
+      final OAuth2Authorizer oauth = new OAuth2Authorizer(accessToken);
+      final Context context = new Context(oauth, ServiceType.QBO, companyId);
+      final DataService service = new DataService(context);
+
+      // first execute a count query to determine pagination
+      final int totalCount = getTotalCount(service);
+
+      // next execute paginated results until complete
+      final QueryResult queryResult = new QueryResult();
+      int startPosition = 1;
+      queryResult.setStartPosition(startPosition);
+      queryResult.setTotalCount(totalCount);
+      queryResult.setMaxResults(totalCount);
+      final ArrayList<IEntity> entities = new ArrayList<>();
+
+      for(int remaining = totalCount; remaining > 0; remaining -= 1000) {
+         final int maxResults = Math.min(1000, remaining);
+         final String query = String.format("SELECT * FROM %s STARTPOSITION %d MAXRESULTS %d", entity, startPosition, maxResults);
+         LOG.debug("Executing QuickBooks Query: {}", query);
+         final QueryResult result = service.executeQuery(query);
+         entities.addAll(result.getEntities());
+         startPosition = result.getStartPosition();
+      }
+
+      queryResult.setEntities(entities);
+      return queryResult;
+   }
+
+   /**
+    * Get the total number of entities in the query response
+    */
+   private int getTotalCount(DataService service) throws FMSException {
+      final QueryResult countResult = service.executeQuery("SELECT COUNT(*) FROM " + entity);
+      final int totalCount = countResult.getTotalCount();
+      LOG.debug("QuickBooks count returned {} entities", totalCount);
+      return totalCount;
    }
 
    /**
@@ -165,7 +186,7 @@ public class QuickbooksRuntime implements QuickbooksAPI {
 
    private static final String sandboxUrl = "https://sandbox-quickbooks.api.intuit.com/v3/company";
    private static final String productionUrl = "https://quickbooks.api.intuit.com/v3/company";
-   private final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
    private OAuth2PlatformClient client;
    private String clientId;
    private String clientSecret;
