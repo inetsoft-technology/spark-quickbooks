@@ -128,14 +128,20 @@ public class SparkSchemaGenerator {
    }
 
    private List<PropertyDescriptor> getPropertyDescriptors(Class<?> clazz) {
+      if(descriptorCache.containsKey(clazz)) {
+         return descriptorCache.get(clazz);
+      }
+
       try {
          BeanInfo beanInfo = Introspector.getBeanInfo(clazz, Object.class);
          final PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
 
          if(propertyDescriptors != null) {
-            return Arrays.stream(propertyDescriptors)
-                         .filter(Objects::nonNull)
-                         .collect(Collectors.toList());
+            final List<PropertyDescriptor> list = Arrays.stream(propertyDescriptors)
+                                                        .filter(Objects::nonNull)
+                                                        .collect(Collectors.toList());
+            descriptorCache.put(clazz, list);
+            return list;
          }
       }
       catch(IntrospectionException e) {
@@ -190,5 +196,6 @@ public class SparkSchemaGenerator {
       }
    }
 
+   private static final Map<Class, List<PropertyDescriptor>> descriptorCache = new HashMap<>();
    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 }
