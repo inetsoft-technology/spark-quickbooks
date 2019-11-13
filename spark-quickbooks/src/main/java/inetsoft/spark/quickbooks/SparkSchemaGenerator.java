@@ -191,7 +191,6 @@ public class SparkSchemaGenerator {
          case "Object":
             return DataTypes.BinaryType;
          default:
-            LOG.debug("Using BinaryType for [{}]", typeName);
             return DataTypes.BinaryType;
       }
    }
