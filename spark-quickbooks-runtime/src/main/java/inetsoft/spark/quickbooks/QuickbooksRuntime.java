@@ -18,8 +18,7 @@ package inetsoft.spark.quickbooks;
 import com.intuit.ipp.core.*;
 import com.intuit.ipp.exception.FMSException;
 import com.intuit.ipp.security.OAuth2Authorizer;
-import com.intuit.ipp.services.DataService;
-import com.intuit.ipp.services.QueryResult;
+import com.intuit.ipp.services.*;
 import com.intuit.ipp.util.Config;
 import com.intuit.oauth2.client.OAuth2PlatformClient;
 import com.intuit.oauth2.config.Environment;
@@ -99,18 +98,43 @@ public class QuickbooksRuntime implements QuickbooksAPI {
       queryResult.setTotalCount(totalCount);
       queryResult.setMaxResults(totalCount);
       final ArrayList<IEntity> entities = new ArrayList<>();
+      BatchOperation batchOperation = new BatchOperation();
+      int counter = 0;
 
       for(int remaining = totalCount; remaining > 0; remaining -= RESULT_LIMIT) {
          final int maxResults = Math.min(RESULT_LIMIT, remaining);
          final String query = String.format("SELECT * FROM %s STARTPOSITION %d MAXRESULTS %d", entity, startPosition, maxResults);
-         LOG.debug("Executing QuickBooks Query: {}", query);
-         final QueryResult result = service.executeQuery(query);
-         entities.addAll(result.getEntities());
+         batchOperation.addQuery(query, String.valueOf(counter++));
          startPosition += RESULT_LIMIT;
+
+         // max 30 batches per operation
+         if(counter % 30 == 0) {
+            executeBatchOperation(service, entities, batchOperation);
+            batchOperation = new BatchOperation();
+         }
       }
 
+      executeBatchOperation(service, entities, batchOperation);
       queryResult.setEntities(entities);
       return queryResult;
+   }
+
+   private void executeBatchOperation(DataService service,
+                                      ArrayList<IEntity> entities,
+                                      BatchOperation batchOperation) throws FMSException
+   {
+      final List<String> bIds = batchOperation.getBIds();
+
+      if(bIds.size() > 0) {
+         final String index = bIds.get(0);
+         LOG.debug("Executing QuickBooks query from index: {}", index);
+         service.executeBatch(batchOperation);
+
+         for(String bId : bIds) {
+            final QueryResult queryResponse = batchOperation.getQueryResponse(bId);
+            entities.addAll(queryResponse.getEntities());
+         }
+      }
    }
 
    /**
@@ -118,9 +142,9 @@ public class QuickbooksRuntime implements QuickbooksAPI {
     */
    private int getTotalCount(DataService service) throws FMSException {
       final QueryResult countResult = service.executeQuery("SELECT COUNT(*) FROM " + entity);
-      final int totalCount = countResult.getTotalCount();
-      LOG.debug("QuickBooks count returned {} entities", totalCount);
-      return totalCount;
+      final Integer totalCount = countResult.getTotalCount();
+      LOG.debug("QuickBooks count returned {} entity(-ies)", totalCount);
+      return totalCount != null ? totalCount : 1;
    }
 
    /**
