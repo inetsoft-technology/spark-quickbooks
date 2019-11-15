@@ -27,10 +27,14 @@ public class DefaultSource implements DataSourceV2, ReadSupport {
       final String companyId = options.get("companyId").orElse("");
       final String redirectUrl = options.get("redirectUrl").orElse(URL);
       final String entity = options.get("entity").orElse("companyInfo");
-      final String mode = options.get("production").orElse("false");
-      final boolean production = Boolean.TRUE.toString().equals(mode);
+      final boolean expandArrays = options.get("expandArrays")
+                                          .map(Boolean.TRUE.toString()::equals)
+                                          .orElse(false);
+      final boolean production = options.get("production")
+                                        .map(Boolean.TRUE.toString()::equals)
+                                        .orElse(false);
       return new QuickbooksReader(clientId, clientSecret, authorizationCode,
-                                  companyId, redirectUrl, production, entity);
+                                  companyId, redirectUrl, production, expandArrays, entity);
    }
 
    private static final String URL = "https://developer.intuit.com/v2/OAuth2Playground/RedirectUrl";

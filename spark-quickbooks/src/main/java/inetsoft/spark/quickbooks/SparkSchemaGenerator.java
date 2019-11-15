@@ -62,7 +62,6 @@ public class SparkSchemaGenerator {
                structType = structType.merge(s);
                sparkSchema.setStructType(structType);
                sparkSchema.setMethodName(propertyName, readMethod.getName());
-               LOG.debug(structType.toString());
             }
          }
       }
@@ -89,7 +88,7 @@ public class SparkSchemaGenerator {
 
       // primitive or primitive wrapper
       if(!type.sameType(DataTypes.BinaryType)) {
-         field = new StructField(propertyName, type, !propertyType.isPrimitive(), Metadata.empty());
+         field = new StructField(propertyName, type, true, Metadata.empty());
          schema.addSchema(propertyName, new SparkSchema());
       }
       // object
@@ -104,7 +103,6 @@ public class SparkSchemaGenerator {
             final SparkSchema nestedSchema = generateSchema(propertyValue);
             final StructType structType = nestedSchema.getStructType();
             schema.addSchema(propertyName, nestedSchema);
-            schema.setStructType(propertyName, structType);
             field = new StructField(propertyName, structType, true, Metadata.empty());
          }
       }
@@ -119,9 +117,9 @@ public class SparkSchemaGenerator {
    private StructField createArrayField(String propertyName, Collection children, SparkSchema schema) {
       StructField field;
       final SparkSchema sparkSchema = generateSchema(children.toArray());
+      sparkSchema.setArraySize(children.size());
       schema.addSchema(propertyName, sparkSchema);
       final StructType complexStructType = sparkSchema.getStructType();
-      schema.setStructType(propertyName, complexStructType);
       field = new StructField(propertyName,
                               DataTypes.createArrayType(complexStructType, true),
                               true,
@@ -130,14 +128,20 @@ public class SparkSchemaGenerator {
    }
 
    private List<PropertyDescriptor> getPropertyDescriptors(Class<?> clazz) {
+      if(descriptorCache.containsKey(clazz)) {
+         return descriptorCache.get(clazz);
+      }
+
       try {
          BeanInfo beanInfo = Introspector.getBeanInfo(clazz, Object.class);
          final PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
 
          if(propertyDescriptors != null) {
-            return Arrays.stream(propertyDescriptors)
-                         .filter(Objects::nonNull)
-                         .collect(Collectors.toList());
+            final List<PropertyDescriptor> list = Arrays.stream(propertyDescriptors)
+                                                        .filter(Objects::nonNull)
+                                                        .collect(Collectors.toList());
+            descriptorCache.put(clazz, list);
+            return list;
          }
       }
       catch(IntrospectionException e) {
@@ -187,10 +191,10 @@ public class SparkSchemaGenerator {
          case "Object":
             return DataTypes.BinaryType;
          default:
-            LOG.debug("Using BinaryType for [{}]", typeName);
             return DataTypes.BinaryType;
       }
    }
 
-   private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+   private static final Map<Class, List<PropertyDescriptor>> descriptorCache = new HashMap<>();
+   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 }

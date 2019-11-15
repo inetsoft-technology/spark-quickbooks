@@ -94,8 +94,8 @@ public class QuickbooksConfig {
          writer.println(expiration);
       }
       catch(IOException e) {
-         LOG.error("Could not save OAuth configuration. Generate a new authorization code");
-         throw new RuntimeException(e);
+         final String msg = "Could not save OAuth configuration. Generate a new authorization code";
+         throw new RuntimeException(msg, e);
       }
 
       return this;
