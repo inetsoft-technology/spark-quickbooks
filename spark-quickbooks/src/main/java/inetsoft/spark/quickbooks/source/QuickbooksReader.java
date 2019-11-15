@@ -63,7 +63,7 @@ public class QuickbooksReader implements DataSourceReader {
 
    private SparkSchema getSparkSchema(List<Object> entities) {
       final SparkSchema sparkSchema = sparkSchemaGenerator.generateSchema(entities.toArray());
-      return expandArrays ? sparkSchema.flatten() : sparkSchema;
+      return sparkSchema.flatten(expandArrays);
    }
 
    private static class TaskDataReader implements DataReader<Row> {
@@ -123,12 +123,12 @@ public class QuickbooksReader implements DataSourceReader {
          final String name = field.name();
          final String[] tokens = name.split("_");
          final String fieldName = tokens[0];
-         SparkSchema schema = parentSchema.getSchema(fieldName);
+         final SparkSchema schema = parentSchema.getSchema(fieldName);
          final String methodName = parentSchema.getMethodName(fieldName);
          // get the POJO getter name from the schema
          Object result = callMethodOnObject(parentObject, methodName);
 
-         if(tokens.length > 1) {
+         if(schema != null && schema.isFlattened()) {
             SparkSchema currentParent = parentSchema;
 
             for(int i = 1; i < tokens.length; i++) {

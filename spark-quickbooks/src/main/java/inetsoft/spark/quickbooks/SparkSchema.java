@@ -30,13 +30,13 @@ public class SparkSchema implements Serializable {
       schemas = new HashMap<>();
    }
 
-   public SparkSchema flatten() {
-      final StructType flat = flatten("", schemas);
+   public SparkSchema flatten(boolean expandArrays) {
+      final StructType flat = flatten("", schemas, expandArrays);
       structType = structType.merge(flat);
       return this;
    }
 
-   public StructType flatten(String parent, Map<String, SparkSchema> schemas) {
+   public StructType flatten(String parent, Map<String, SparkSchema> schemas, boolean expand) {
       final ArrayList<StructField> structFields = new ArrayList<>();
       final Map<String, SparkSchema> newSchemas = new HashMap<>();
 
@@ -46,15 +46,16 @@ public class SparkSchema implements Serializable {
          String prefixedKey = parent + key;
 
          if(structType.nonEmpty()) {
+            schema.flattened = true;
             final int schemaArraySize = schema.getArraySize();
 
             if(schemaArraySize == 0) {
-               flattenStruct(schemas, structFields, newSchemas, key, schema, prefixedKey);
+               flattenStruct(schemas, structFields, newSchemas, key, schema, prefixedKey, expand);
             }
-            else {
+            else if(expand){
                for(int i = 0; i < schemaArraySize; i++) {
                   final String newKeyName = prefixedKey + "_" + i;
-                  flattenStruct(schemas, structFields, newSchemas, key, schema, newKeyName);
+                  flattenStruct(schemas, structFields, newSchemas, key, schema, newKeyName, expand);
                }
             }
          }
@@ -66,24 +67,24 @@ public class SparkSchema implements Serializable {
 
    /**
     * Recursively flatten nested objects to '_' delimited key/value pairs
-    *
-    * @param schemas      The schema of the object to flatten
+    *  @param schemas      The schema of the object to flatten
     * @param structFields a list of the flattened fields to add to our parent struct
     * @param newSchemas   a mapping back to the original schema for the nested field
     * @param key          the original name of the field
     * @param schema       the schema of the object we're flattening
     * @param newKeyName   the new flattened name of for the field
+    * @param expand       true to expand arrays to columns
     */
    private void flattenStruct(Map<String, SparkSchema> schemas,
                               ArrayList<StructField> structFields,
                               Map<String, SparkSchema> newSchemas,
                               String key,
                               SparkSchema schema,
-                              String newKeyName)
+                              String newKeyName, boolean expand)
    {
       final Map<String, SparkSchema> originalSchemas = schema.schemas;
       final String parent = newKeyName + "_";
-      final StructType newStructType = schema.flatten(parent, new HashMap<>(originalSchemas));
+      final StructType newStructType = schema.flatten(parent, new HashMap<>(originalSchemas), expand);
 
       if(newStructType.nonEmpty()) {
          for(StructField field : newStructType.fields()) {
@@ -132,6 +133,13 @@ public class SparkSchema implements Serializable {
       this.arraySize = arraySize;
    }
 
+   /**
+    * @return if this schema represents a flattened field on the root entity
+    */
+   public boolean isFlattened() {
+      return flattened;
+   }
+
    private static SparkSchema merge(SparkSchema a, SparkSchema b) {
       final SparkSchema newSchema = new SparkSchema();
       newSchema.structType = a.structType.merge(b.structType);
@@ -139,6 +147,8 @@ public class SparkSchema implements Serializable {
       newSchema.methodNames.putAll(b.methodNames);
       newSchema.schemas.putAll(a.schemas);
       newSchema.setArraySize(Math.max(a.arraySize, b.arraySize));
+      assert a.flattened == b.flattened : "Trying to merge flattened struct with nested struct";
+      newSchema.flattened = a.flattened;
 
       for(Map.Entry<String, SparkSchema> entry : b.schemas.entrySet()) {
          newSchema.schemas.merge(entry.getKey(), entry.getValue(), SparkSchema::merge);
@@ -150,5 +160,6 @@ public class SparkSchema implements Serializable {
    private StructType structType;
    private final Map<String, String> methodNames;
    private final Map<String, SparkSchema> schemas;
+   private boolean flattened = false;
    private int arraySize = 0;
 }
