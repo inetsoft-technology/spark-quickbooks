@@ -143,7 +143,7 @@ public class QuickbooksRuntime implements QuickbooksAPI {
    private int getTotalCount(DataService service) throws FMSException {
       final QueryResult countResult = service.executeQuery("SELECT COUNT(*) FROM " + entity);
       final Integer totalCount = countResult.getTotalCount();
-      LOG.debug("QuickBooks count returned {} entity(-ies)", totalCount);
+      LOG.debug("QuickBooks count returned {} result(s)", totalCount);
       return totalCount != null ? totalCount : 1;
    }
 
