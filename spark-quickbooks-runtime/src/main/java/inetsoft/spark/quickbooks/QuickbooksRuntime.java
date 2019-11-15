@@ -107,8 +107,7 @@ public class QuickbooksRuntime implements QuickbooksAPI {
          batchOperation.addQuery(query, String.valueOf(counter++));
          startPosition += RESULT_LIMIT;
 
-         // max 30 batches per operation
-         if(counter % 30 == 0) {
+         if(counter % BATCH_LIMIT == 0) {
             executeBatchOperation(service, entities, batchOperation);
             batchOperation = new BatchOperation();
          }
@@ -213,6 +212,8 @@ public class QuickbooksRuntime implements QuickbooksAPI {
    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
    // max number of results quickbooks can return
    private static final int RESULT_LIMIT = 1000;
+   // max 30 queries per batch operation
+   public static final int BATCH_LIMIT = 30;
    private OAuth2PlatformClient client;
    private String clientId;
    private String clientSecret;
