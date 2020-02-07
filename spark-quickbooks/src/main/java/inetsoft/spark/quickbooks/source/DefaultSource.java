@@ -15,16 +15,23 @@
  */
 package inetsoft.spark.quickbooks.source;
 
+import org.apache.spark.sql.sources.DataSourceRegister;
 import org.apache.spark.sql.sources.v2.*;
 import org.apache.spark.sql.sources.v2.reader.DataSourceReader;
 
-public class DefaultSource implements DataSourceV2, ReadSupport {
+public class DefaultSource implements DataSourceV2, ReadSupport, DataSourceRegister {
+   @Override
+   public String shortName() {
+      return "quickbooks";
+   }
+
    @Override
    public DataSourceReader createReader(DataSourceOptions options) {
-      final String clientId = options.get("clientId").orElse("");
-      final String clientSecret = options.get("clientSecret").orElse("");
-      final String authorizationCode = options.get("authorizationCode").orElse("");
-      final String companyId = options.get("companyId").orElse("");
+      final String clientId = options.get("clientId").orElse(null);
+      final String clientSecret = options.get("clientSecret").orElse(null);
+      final String authorizationCode = options.get("authorizationCode").orElse(null);
+      final String accessToken = options.get("accessToken").orElse(null);
+      final String companyId = options.get("companyId").orElse(null);
       final String redirectUrl = options.get("redirectUrl").orElse(URL);
       final String entity = options.get("entity").orElse("companyInfo");
       final boolean expandArrays = options.get("expandArrays")
@@ -33,7 +40,7 @@ public class DefaultSource implements DataSourceV2, ReadSupport {
       final boolean production = options.get("production")
                                         .map(Boolean.TRUE.toString()::equals)
                                         .orElse(false);
-      return new QuickbooksReader(clientId, clientSecret, authorizationCode,
+      return new QuickbooksReader(clientId, clientSecret, authorizationCode, accessToken,
                                   companyId, redirectUrl, production, expandArrays, entity);
    }
 

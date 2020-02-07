@@ -28,7 +28,7 @@ import java.util.List;
  * Load the quickbooks runtime and execute a query
  */
 public class QuickbooksStreamReader implements Serializable {
-   public QuickbooksStreamReader(String clientId,
+   public QuickbooksStreamReader(String accessToken, String clientId,
                                  String clientSecret,
                                  String authorizationCode,
                                  String companyId,
@@ -36,6 +36,7 @@ public class QuickbooksStreamReader implements Serializable {
                                  boolean production,
                                  String entity)
    {
+      this.accessToken = accessToken;
       this.clientId = clientId;
       this.clientSecret = clientSecret;
       this.authorizationCode = authorizationCode;
@@ -53,7 +54,8 @@ public class QuickbooksStreamReader implements Serializable {
             classLoader.loadClass("inetsoft.spark.quickbooks.QuickbooksRuntime");
          final QuickbooksAPI api = (QuickbooksAPI) aClass.newInstance();
          final QuickbooksAPI.QuickbooksQueryResult result =
-            api.loadData(clientId, clientSecret, authorizationCode, companyId, redirectUrl, production, entity);
+            api.loadData(accessToken, clientId, clientSecret, authorizationCode,
+                         companyId, redirectUrl, production, entity);
          return Collections.unmodifiableList(result.getEntities());
       }
       catch(Exception e) {
@@ -70,4 +72,5 @@ public class QuickbooksStreamReader implements Serializable {
    private final String redirectUrl;
    private final boolean production;
    private final String entity;
+   private final String accessToken;
 }

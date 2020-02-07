@@ -22,7 +22,7 @@ import java.io.*;
 import java.lang.invoke.MethodHandles;
 
 /**
- * Manage the storage of the Quickbooks OAuth tokens
+ * Manage the storage of the QuickBooks OAuth tokens
  */
 public class QuickbooksConfig {
    private QuickbooksConfig() {
@@ -60,7 +60,7 @@ public class QuickbooksConfig {
    }
 
    private static File getConfigFile(String clientId, String companyId) {
-      LOG.info("Reading OAuth config file from {}", qbLibDir);
+      LOG.debug("Reading OAuth config file from {}", qbLibDir);
       return new File(qbLibDir, clientId + companyId);
    }
 
