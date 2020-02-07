@@ -33,7 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QuickbooksRuntime implements QuickbooksAPI {
-   public QuickbooksQueryResult loadData(String clientId,
+   public QuickbooksQueryResult loadData(String accessToken,
+                                         String clientId,
                                          String clientSecret,
                                          String authorizationCode,
                                          String companyId,
@@ -48,13 +49,18 @@ public class QuickbooksRuntime implements QuickbooksAPI {
       this.redirectUrl = redirectUrl;
       this.production = production;
       this.entity = entity;
-      return loadData(QuickbooksConfig.readConfig(clientId, companyId));
+
+      if(accessToken == null || accessToken.isEmpty()) {
+         return loadData(QuickbooksConfig.readConfig(clientId, companyId), null);
+      }
+
+      return loadData(null, accessToken);
    }
 
    /**
     * Call the Quickbooks API to check the tokens and execute our query
     */
-   private QuickbooksQueryResult loadData(QuickbooksConfig config) {
+   private QuickbooksQueryResult loadData(QuickbooksConfig config, String accessToken) {
       final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 
       try {
@@ -65,7 +71,11 @@ public class QuickbooksRuntime implements QuickbooksAPI {
             .callDiscoveryAPI(production ? Environment.PRODUCTION : Environment.SANDBOX)
             .buildConfig();
          client = new OAuth2PlatformClient(oauth2Config);
-         final String accessToken = connect(config);
+
+         if(accessToken == null) {
+            accessToken = connect(config);
+         }
+
          final QueryResult queryResult = execute(accessToken);
          return new QueryResultAdapter(queryResult);
       }
@@ -103,7 +113,10 @@ public class QuickbooksRuntime implements QuickbooksAPI {
 
       for(int remaining = totalCount; remaining > 0; remaining -= RESULT_LIMIT) {
          final int maxResults = Math.min(RESULT_LIMIT, remaining);
-         final String query = String.format("SELECT * FROM %s STARTPOSITION %d MAXRESULTS %d", entity, startPosition, maxResults);
+         final String query = String.format("SELECT * FROM %s STARTPOSITION %d MAXRESULTS %d",
+                                            entity,
+                                            startPosition,
+                                            maxResults);
          batchOperation.addQuery(query, String.valueOf(counter++));
          startPosition += RESULT_LIMIT;
 
@@ -206,14 +219,13 @@ public class QuickbooksRuntime implements QuickbooksAPI {
 
       private QueryResult queryResult;
    }
-
+   // max 30 queries per batch operation
+   public static final int BATCH_LIMIT = 30;
    private static final String sandboxUrl = "https://sandbox-quickbooks.api.intuit.com/v3/company";
    private static final String productionUrl = "https://quickbooks.api.intuit.com/v3/company";
    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
    // max number of results quickbooks can return
    private static final int RESULT_LIMIT = 1000;
-   // max 30 queries per batch operation
-   public static final int BATCH_LIMIT = 30;
    private OAuth2PlatformClient client;
    private String clientId;
    private String clientSecret;

@@ -36,6 +36,7 @@ public class QuickbooksReader implements DataSourceReader {
    QuickbooksReader(String clientId,
                     String clientSecret,
                     String authorizationCode,
+                    String accessToken,
                     String companyId,
                     String redirectUrl,
                     boolean production,
@@ -43,7 +44,8 @@ public class QuickbooksReader implements DataSourceReader {
                     String entity)
    {
       this.expandArrays = expandArrays;
-      reader = new QuickbooksStreamReader(clientId, clientSecret, authorizationCode, companyId, redirectUrl, production, entity);
+      reader = new QuickbooksStreamReader(accessToken, clientId, clientSecret, authorizationCode,
+                                          companyId, redirectUrl, production, entity);
    }
 
    @Override
