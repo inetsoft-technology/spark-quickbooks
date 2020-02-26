@@ -17,8 +17,12 @@ package inetsoft.spark.quickbooks;
 
 import java.util.List;
 
+/**
+ * Public API for the QuickBooks runtime implementation
+ */
 public interface QuickbooksAPI {
-   QuickbooksQueryResult loadData(String accessToken, String clientId,
+   QuickbooksQueryResult loadData(String accessToken,
+                                  String clientId,
                                   String clientSecret,
                                   String authorizationCode,
                                   String companyID,
