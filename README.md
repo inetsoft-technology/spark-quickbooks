@@ -48,6 +48,7 @@ version: 1.1.1
 | entity            | Object to query from the API      |
 | production        | Query production environment      |
 | expandArrays      | Expands nested arrays to columns  |
+| expandStructs     | Expands nested structs to columns |
 
 * `companyId`: Also called `realmId`, it's the ID of the company that you want to query in QuickBooks
 * `entity`: Due to the nature of the QuickBooks Online query syntax, only 1 entity may be queried at a time.
@@ -55,6 +56,7 @@ version: 1.1.1
 * `expandArrays`: `true` to expand every element in an array to its own column
     * `lineItems: [{price: 7.0}, {price: 3.0}]` becomes `lineItems_0_price, lineItems_1_price`
     with the value 7.0 and 3.0 respectively
+* `expandStructs`: default `true` to expand nested structs to their own columns
 
 ## OAuth Options
 

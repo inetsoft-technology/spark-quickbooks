@@ -33,19 +33,11 @@ import java.util.*;
  * Read the quickbooks schema and create the entities factory
  */
 public class QuickbooksReader implements DataSourceReader {
-   QuickbooksReader(String clientId,
-                    String clientSecret,
-                    String authorizationCode,
-                    String accessToken,
-                    String companyId,
-                    String redirectUrl,
-                    boolean production,
-                    boolean expandArrays,
-                    String entity)
+   QuickbooksReader(QuickbooksDataSourceOptions options)
    {
-      this.expandArrays = expandArrays;
-      reader = new QuickbooksStreamReader(accessToken, clientId, clientSecret, authorizationCode,
-                                          companyId, redirectUrl, production, entity);
+      this.expandArrays = options.isExpandArrays();
+      this.expandStructs = options.isExpandStructs();
+      reader = new QuickbooksStreamReader(options);
    }
 
    @Override
@@ -65,7 +57,7 @@ public class QuickbooksReader implements DataSourceReader {
 
    private SparkSchema getSparkSchema(List<Object> entities) {
       final SparkSchema sparkSchema = sparkSchemaGenerator.generateSchema(entities.toArray());
-      return sparkSchema.flatten(expandArrays);
+      return expandStructs ? sparkSchema.flatten(expandArrays) : sparkSchema;
    }
 
    private static class TaskDataReader implements DataReader<Row> {
@@ -244,5 +236,6 @@ public class QuickbooksReader implements DataSourceReader {
    private final SparkSchemaGenerator sparkSchemaGenerator = new SparkSchemaGenerator();
    private final QuickbooksStreamReader reader;
    private final boolean expandArrays;
+   private final boolean expandStructs;
    private SparkSchema schema = null;
 }

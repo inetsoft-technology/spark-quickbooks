@@ -28,22 +28,15 @@ import java.util.List;
  * Load the quickbooks runtime and execute a query
  */
 public class QuickbooksStreamReader implements Serializable {
-   public QuickbooksStreamReader(String accessToken, String clientId,
-                                 String clientSecret,
-                                 String authorizationCode,
-                                 String companyId,
-                                 String redirectUrl,
-                                 boolean production,
-                                 String entity)
-   {
-      this.accessToken = accessToken;
-      this.clientId = clientId;
-      this.clientSecret = clientSecret;
-      this.authorizationCode = authorizationCode;
-      this.companyId = companyId;
-      this.redirectUrl = redirectUrl;
-      this.production = production;
-      this.entity = entity;
+   public QuickbooksStreamReader(QuickbooksDataSourceOptions options) {
+      this.accessToken = options.getAccessToken();
+      this.clientId = options.getClientId();
+      this.clientSecret = options.getClientSecret();
+      this.authorizationCode = options.getAuthorizationCode();
+      this.companyId = options.getCompanyId();
+      this.redirectUrl = options.getRedirectUrl();
+      this.production = options.isProduction();
+      this.entity = options.getEntity();
    }
 
    public List<Object> getEntities() {

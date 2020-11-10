@@ -27,22 +27,6 @@ public class DefaultSource implements DataSourceV2, ReadSupport, DataSourceRegis
 
    @Override
    public DataSourceReader createReader(DataSourceOptions options) {
-      final String clientId = options.get("clientId").orElse(null);
-      final String clientSecret = options.get("clientSecret").orElse(null);
-      final String authorizationCode = options.get("authorizationCode").orElse(null);
-      final String accessToken = options.get("accessToken").orElse(null);
-      final String companyId = options.get("companyId").orElse(null);
-      final String redirectUrl = options.get("redirectUrl").orElse(URL);
-      final String entity = options.get("entity").orElse("companyInfo");
-      final boolean expandArrays = options.get("expandArrays")
-                                          .map(Boolean.TRUE.toString()::equals)
-                                          .orElse(false);
-      final boolean production = options.get("production")
-                                        .map(Boolean.TRUE.toString()::equals)
-                                        .orElse(false);
-      return new QuickbooksReader(clientId, clientSecret, authorizationCode, accessToken,
-                                  companyId, redirectUrl, production, expandArrays, entity);
+      return new QuickbooksReader(QuickbooksDataSourceOptions.from(options));
    }
-
-   private static final String URL = "https://developer.intuit.com/v2/OAuth2Playground/RedirectUrl";
 }
