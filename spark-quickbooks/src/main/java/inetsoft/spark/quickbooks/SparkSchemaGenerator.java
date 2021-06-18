@@ -92,7 +92,7 @@ public class SparkSchemaGenerator {
          schema.addSchema(propertyName, new SparkSchema());
       }
       // object
-      else if(propertyValue != null && !propertyType.isEnum()) {
+      else if(propertyValue != null) {
          if(Collection.class.isAssignableFrom(propertyType)) {
             field = createArrayField(propertyName, (Collection) propertyValue, schema);
          }
@@ -191,6 +191,11 @@ public class SparkSchemaGenerator {
          case "Object":
             return DataTypes.BinaryType;
          default:
+             // convert enum to string representation
+            if (clazz.isEnum()) {
+               return DataTypes.StringType;
+            }
+
             return DataTypes.BinaryType;
       }
    }

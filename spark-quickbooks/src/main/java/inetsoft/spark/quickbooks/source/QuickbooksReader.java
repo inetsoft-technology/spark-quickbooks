@@ -19,8 +19,12 @@ import inetsoft.spark.quickbooks.SparkSchema;
 import inetsoft.spark.quickbooks.SparkSchemaGenerator;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema;
-import org.apache.spark.sql.sources.v2.reader.*;
-import org.apache.spark.sql.types.*;
+import org.apache.spark.sql.sources.v2.reader.DataReader;
+import org.apache.spark.sql.sources.v2.reader.DataReaderFactory;
+import org.apache.spark.sql.sources.v2.reader.DataSourceReader;
+import org.apache.spark.sql.types.ArrayType;
+import org.apache.spark.sql.types.StructField;
+import org.apache.spark.sql.types.StructType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -170,7 +174,7 @@ public class QuickbooksReader implements DataSourceReader {
             }
          }
 
-         if(result == null || result instanceof Enum) {
+         if(result == null) {
             return null;
          }
 
@@ -180,13 +184,15 @@ public class QuickbooksReader implements DataSourceReader {
             iterator.forEachRemaining(obj -> childCells.add(createRow(obj, schema)));
             result = childCells.toArray();
          }
-         if(field.dataType() instanceof StructType) {
+         else if(field.dataType() instanceof StructType) {
             // wrap objects in nested rows
             result = createRow(result, schema);
          }
-
-         if(result instanceof Date) {
+         else if(result instanceof Date) {
             result = new java.sql.Date(((Date) result).getTime());
+         }
+         else if(result instanceof Enum) {
+            result = result.toString();
          }
 
          return result;

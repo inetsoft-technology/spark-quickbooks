@@ -37,7 +37,7 @@ public class SparkSchema implements Serializable {
    }
 
    public StructType flatten(String parent, Map<String, SparkSchema> schemas, boolean expand) {
-      final ArrayList<StructField> structFields = new ArrayList<>();
+      final List<StructField> structFields = new ArrayList<>();
       final Map<String, SparkSchema> newSchemas = new HashMap<>();
 
       for(Map.Entry<String, SparkSchema> entry : schemas.entrySet()) {
@@ -76,7 +76,7 @@ public class SparkSchema implements Serializable {
     * @param expand       true to expand arrays to columns
     */
    private void flattenStruct(Map<String, SparkSchema> schemas,
-                              ArrayList<StructField> structFields,
+                              List<StructField> structFields,
                               Map<String, SparkSchema> newSchemas,
                               String key,
                               SparkSchema schema,
