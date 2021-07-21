@@ -44,7 +44,8 @@
   </scm>
 
   <properties>
-    <spark.version>2.3.2</spark.version>
+    <spark.version>3.1.1</spark.version>
+    <intuit.version>6.0.7</intuit.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

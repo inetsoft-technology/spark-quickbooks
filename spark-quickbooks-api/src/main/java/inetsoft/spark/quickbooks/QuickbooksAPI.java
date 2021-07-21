@@ -21,14 +21,7 @@ import java.util.List;
  * Public API for the QuickBooks runtime implementation
  */
 public interface QuickbooksAPI {
-   QuickbooksQueryResult loadData(String accessToken,
-                                  String clientId,
-                                  String clientSecret,
-                                  String authorizationCode,
-                                  String companyID,
-                                  String redirectUrl,
-                                  boolean production,
-                                  String entity);
+   QuickbooksQueryResult loadData(QuickbooksDataSourceOptions options);
 
    interface QuickbooksQueryResult {
       List<Object> getEntities();

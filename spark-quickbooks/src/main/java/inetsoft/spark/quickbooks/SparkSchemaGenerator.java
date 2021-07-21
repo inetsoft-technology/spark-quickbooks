@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.beans.*;
+import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 /**
  * Handles generating a spark {@link StructType} schema from a POJO
  */
-public class SparkSchemaGenerator {
+public class SparkSchemaGenerator implements Serializable {
    /**
     * Generate the spark schema for a list of objects
     */
@@ -97,7 +98,7 @@ public class SparkSchemaGenerator {
             field = createArrayField(propertyName, (Collection) propertyValue, schema);
          }
          else if(propertyType.isArray()) {
-            field = createArrayField(propertyName, Arrays.asList(propertyValue), schema);
+            field = createArrayField(propertyName, Collections.singletonList(propertyValue), schema);
          }
          else {
             final SparkSchema nestedSchema = generateSchema(propertyValue);
@@ -115,16 +116,14 @@ public class SparkSchemaGenerator {
    }
 
    private StructField createArrayField(String propertyName, Collection children, SparkSchema schema) {
-      StructField field;
       final SparkSchema sparkSchema = generateSchema(children.toArray());
       sparkSchema.setArraySize(children.size());
       schema.addSchema(propertyName, sparkSchema);
       final StructType complexStructType = sparkSchema.getStructType();
-      field = new StructField(propertyName,
-                              DataTypes.createArrayType(complexStructType, true),
-                              true,
-                              Metadata.empty());
-      return field;
+      return new StructField(propertyName,
+                             DataTypes.createArrayType(complexStructType, true),
+                             true,
+                             Metadata.empty());
    }
 
    private List<PropertyDescriptor> getPropertyDescriptors(Class<?> clazz) {
@@ -185,9 +184,9 @@ public class SparkSchemaGenerator {
          case "Boolean":
             return DataTypes.BooleanType;
          case "Date":
-            return DataTypes.DateType;
+            return DataTypes.LongType;
          case "Timestamp":
-            return DataTypes.TimestampType;
+            return DataTypes.LongType;
          case "Object":
             return DataTypes.BinaryType;
          default:

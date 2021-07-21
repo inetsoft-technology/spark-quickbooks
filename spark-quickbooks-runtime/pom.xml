@@ -55,7 +55,7 @@
     <dependency>
       <groupId>com.intuit.quickbooks-online</groupId>
       <artifactId>ipp-v3-java-data</artifactId>
-      <version>4.0.9</version>
+      <version>${intuit.version}</version>
       <exclusions>
         <exclusion>
           <groupId>com.sun.xml.bind</groupId>
@@ -67,7 +67,7 @@
       <groupId>com.intuit.quickbooks-online</groupId>
       <artifactId>ipp-v3-java-devkit</artifactId>
       <classifier>jar-with-dependencies</classifier>
-      <version>4.0.9</version>
+      <version>${intuit.version}</version>
       <exclusions>
         <exclusion>
           <groupId>com.sun.xml.bind</groupId>
@@ -79,7 +79,7 @@
       <groupId>com.intuit.quickbooks-online</groupId>
       <artifactId>oauth2-platform-api</artifactId>
       <classifier>jar-with-dependencies</classifier>
-      <version>4.0.9</version>
+      <version>${intuit.version}</version>
     </dependency>
     <dependency>
       <groupId>com.inetsoft.connectors</groupId>

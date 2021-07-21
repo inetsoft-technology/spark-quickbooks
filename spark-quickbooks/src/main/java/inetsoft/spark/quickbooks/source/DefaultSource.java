@@ -15,18 +15,32 @@
  */
 package inetsoft.spark.quickbooks.source;
 
+import inetsoft.spark.quickbooks.QuickbooksDataSourceOptions;
+import org.apache.spark.sql.connector.catalog.*;
+import org.apache.spark.sql.connector.expressions.Transform;
 import org.apache.spark.sql.sources.DataSourceRegister;
-import org.apache.spark.sql.sources.v2.*;
-import org.apache.spark.sql.sources.v2.reader.DataSourceReader;
+import org.apache.spark.sql.types.*;
+import org.apache.spark.sql.util.CaseInsensitiveStringMap;
 
-public class DefaultSource implements DataSourceV2, ReadSupport, DataSourceRegister {
+import java.util.*;
+
+public class DefaultSource implements TableProvider, DataSourceRegister {
    @Override
    public String shortName() {
       return "quickbooks";
    }
 
    @Override
-   public DataSourceReader createReader(DataSourceOptions options) {
-      return new QuickbooksReader(QuickbooksDataSourceOptions.from(options));
+   public StructType inferSchema(CaseInsensitiveStringMap caseInsensitiveStringMap) {
+      return getTable(null,
+                      new Transform[0],
+                      caseInsensitiveStringMap.asCaseSensitiveMap()).schema();
+   }
+
+   @Override
+   public Table getTable(StructType structType, Transform[] transforms, Map<String, String> map) {
+      final QuickbooksDataSourceOptions options = QuickbooksDataSourceOptions.from(map);
+      final QuickbooksStreamReader reader = new QuickbooksStreamReader(options);
+      return new QuickbooksTable(options, reader);
    }
 }

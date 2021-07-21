@@ -21,5 +21,5 @@ import com.intuit.ipp.services.QueryResult;
 
 public interface QueryExecutor {
    QueryResult execute(String token, String companyId,
-                       boolean production, String entity) throws FMSException;
+                       boolean production, String entity, boolean schemaOnly) throws FMSException;
 }

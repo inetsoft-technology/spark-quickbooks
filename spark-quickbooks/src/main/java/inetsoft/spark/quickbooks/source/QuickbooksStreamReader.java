@@ -15,7 +15,7 @@
  */
 package inetsoft.spark.quickbooks.source;
 
-import inetsoft.spark.quickbooks.QuickbooksAPI;
+import inetsoft.spark.quickbooks.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,26 +29,29 @@ import java.util.List;
  */
 public class QuickbooksStreamReader implements Serializable {
    public QuickbooksStreamReader(QuickbooksDataSourceOptions options) {
-      this.accessToken = options.getAccessToken();
-      this.clientId = options.getClientId();
-      this.clientSecret = options.getClientSecret();
-      this.authorizationCode = options.getAuthorizationCode();
-      this.companyId = options.getCompanyId();
-      this.redirectUrl = options.getRedirectUrl();
-      this.production = options.isProduction();
-      this.entity = options.getEntity();
+      this.options = options;
    }
 
    public List<Object> getEntities() {
+      return getEntities(false);
+   }
+
+   public SparkSchema getSchema() {
+      final List<Object> entities = getEntities(true);
+      final SparkSchema sparkSchema = new SparkSchemaGenerator().generateSchema(entities.toArray());
+      return options.isExpandStructs() ? sparkSchema.flatten(options.isExpandArrays()) : sparkSchema;
+   }
+
+   private List<Object> getEntities(boolean schemaOnly) {
+      options.setSchemaOnly(schemaOnly);
+
       try {
          final QuickbooksClassloader classLoader =
             QuickbooksClassloader.create(getClass().getClassLoader());
          final Class<?> aClass =
             classLoader.loadClass("inetsoft.spark.quickbooks.QuickbooksRuntime");
          final QuickbooksAPI api = (QuickbooksAPI) aClass.newInstance();
-         final QuickbooksAPI.QuickbooksQueryResult result =
-            api.loadData(accessToken, clientId, clientSecret, authorizationCode,
-                         companyId, redirectUrl, production, entity);
+         final QuickbooksAPI.QuickbooksQueryResult result = api.loadData(options);
          return Collections.unmodifiableList(result.getEntities());
       }
       catch(Exception e) {
@@ -58,12 +61,5 @@ public class QuickbooksStreamReader implements Serializable {
    }
 
    private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-   private final String clientId;
-   private final String clientSecret;
-   private final String authorizationCode;
-   private final String companyId;
-   private final String redirectUrl;
-   private final boolean production;
-   private final String entity;
-   private final String accessToken;
+   private final QuickbooksDataSourceOptions options;
 }

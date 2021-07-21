@@ -30,8 +30,8 @@ import java.util.List;
 
 public class QueryExecutorService implements QueryExecutor {
    @Override
-   public QueryResult execute(String token, String companyId,
-                              boolean production, String entity) throws FMSException
+   public QueryResult execute(String token, String companyId, boolean production,
+                              String entity, boolean schemaOnly) throws FMSException
    {
       final String apiUrl = production ? productionUrl : sandboxUrl;
       Config.setProperty(Config.BASE_URL_QBO, apiUrl);
@@ -40,7 +40,7 @@ public class QueryExecutorService implements QueryExecutor {
       final DataService service = new DataService(context);
 
       // first execute a count query to determine pagination
-      final int totalCount = getTotalCount(service, entity);
+      final int totalCount = schemaOnly ? 1 : getTotalCount(service, entity);
 
       // next execute paginated results until complete
       final QueryResult queryResult = new QueryResult();

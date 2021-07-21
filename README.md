@@ -2,7 +2,7 @@
 
 Build status: [![Build Status](https://travis-ci.com/inetsoft-technology/spark-quickbooks.svg?branch=master)][1]
 
-Spark SQL 2.3.2 Connector for QuickBooks Online
+Spark SQL 3.1.1 Connector for QuickBooks Online
 
 ## Requirements
 
@@ -18,9 +18,6 @@ get a new authorization code.
 If you have already generated an access token you can pass that as an option instead of having
 the data source manage the OAuth flow.
 
-The data source is implemented as `DataSourceV2` which cannot be accessed through the SQL syntax
-in Spark 2.3.2. You will need to use the Java or Scala API to use this connector.
-
 ## Installation
 
 Add the JARs as dependencies
@@ -29,7 +26,7 @@ Add the JARs as dependencies
 ```
 groupId: com.inetsoft.connectors
 artifactId: spark-quickbooks
-version: 1.1.3
+version: 2.0.0
 classifier: bundle
 ```
 
@@ -37,7 +34,7 @@ classifier: bundle
 ```
 groupId: com.inetsoft.connectors
 artifactId: spark-quickbooks-api
-version: 1.1.3
+version: 2.0.0
 ```
 
 ## General Options
