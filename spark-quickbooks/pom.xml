@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.inetsoft.connectors</groupId>
     <artifactId>spark-quickbooks-parent</artifactId>
-    <version>2.0.3-SNAPSHOT</version>
+    <version>2.0.3</version>
   </parent>
 
   <artifactId>spark-quickbooks</artifactId>
@@ -45,7 +45,7 @@
     <developerConnection>scm:git:https://github.com/inetsoft-technology/spark-quickbooks.git
     </developerConnection>
     <url>https://github.com/inetsoft-technology/spark-quickbooks/tree/master</url>
-    <tag>HEAD</tag>
+    <tag>v2.0.3</tag>
   </scm>
 
   <pluginRepositories>
