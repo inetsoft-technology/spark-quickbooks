@@ -6,8 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="spark-quickbooks (1)" />
         <module name="spark-quickbooks-api" />
+        <module name="spark-quickbooks (1)" />
         <module name="spark-quickbooks-runtime" />
       </profile>
     </annotationProcessing>

@@ -5,7 +5,7 @@
   <packaging>pom</packaging>
   <groupId>com.inetsoft.connectors</groupId>
   <artifactId>spark-quickbooks-parent</artifactId>
-  <version>1.1.4</version>
+  <version>1.1.5-SNAPSHOT</version>
 
   <name>Spark QuickBooks Connector</name>
   <description>QuickBooks Online connector for Spark SQL.</description>
@@ -40,7 +40,7 @@
     <connection>scm:git:https://github.com/inetsoft-technology/spark-quickbooks.git</connection>
     <developerConnection>scm:git:https://github.com/inetsoft-technology/spark-quickbooks.git</developerConnection>
     <url>https://github.com/inetsoft-technology/spark-quickbooks/tree/master</url>
-    <tag>v1.1.4</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
@@ -89,6 +89,19 @@
             <serverId>ossrh</serverId>
             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
             <autoReleaseAfterClose>true</autoReleaseAfterClose>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>7.1.0</version>
+          <configuration>
+            <failBuildOnCVSS>9</failBuildOnCVSS>
+            <skipProvidedScope>true</skipProvidedScope>
+            <skipTestScope>true</skipTestScope>
+            <suppressionFiles>
+              <suppressionFile>owasp-suppressions.xml</suppressionFile>
+            </suppressionFiles>
           </configuration>
         </plugin>
       </plugins>
