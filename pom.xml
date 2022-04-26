@@ -45,7 +45,7 @@
 
   <properties>
     <spark.version>3.1.1</spark.version>
-    <intuit.version>6.0.7</intuit.version>
+    <intuit.version>6.2.1</intuit.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -90,6 +90,19 @@
             <serverId>ossrh</serverId>
             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
             <autoReleaseAfterClose>true</autoReleaseAfterClose>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>7.1.0</version>
+          <configuration>
+            <failBuildOnCVSS>9</failBuildOnCVSS>
+            <skipProvidedScope>true</skipProvidedScope>
+            <skipTestScope>true</skipTestScope>
+            <suppressionFiles>
+              <suppressionFile>owasp-suppressions.xml</suppressionFile>
+            </suppressionFiles>
           </configuration>
         </plugin>
       </plugins>

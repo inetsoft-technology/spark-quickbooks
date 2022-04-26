@@ -1,113 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <artifactId>spark-quickbooks-parent</artifactId>
-    <groupId>com.inetsoft.connectors</groupId>
-    <version>2.0.2-SNAPSHOT</version>
-  </parent>
+    <parent>
+        <artifactId>spark-quickbooks-parent</artifactId>
+        <groupId>com.inetsoft.connectors</groupId>
+        <version>2.0.2-SNAPSHOT</version>
+    </parent>
 
 
-  <artifactId>spark-quickbooks-api</artifactId>
+    <artifactId>spark-quickbooks-api</artifactId>
 
-  <name>Spark QuickBooks Connector API</name>
-  <description>QuickBooks Online connector for Spark SQL.</description>
-  <url>https://github.com/inetsoft-technology/spark-quickbooks/</url>
+    <name>Spark QuickBooks Connector API</name>
+    <description>QuickBooks Online connector for Spark SQL.</description>
+    <url>https://github.com/inetsoft-technology/spark-quickbooks/</url>
 
-  <licenses>
-    <license>
-      <name>The Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    </license>
-  </licenses>
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
-  <organization>
-    <name>InetSoft Technology</name>
-    <url>https://www.inetsoft.com/</url>
-  </organization>
+    <organization>
+        <name>InetSoft Technology</name>
+        <url>https://www.inetsoft.com/</url>
+    </organization>
 
-  <developers>
-    <developer>
-      <name>Eric Lee</name>
-      <email>eric.lee@inetsoft.com</email>
-      <organization>InetSoft Technology</organization>
-    </developer>
-    <developer>
-      <name>Jason Shobe</name>
-      <email>jason.shobe@inetsoft.com</email>
-      <organization>InetSoft Technology</organization>
-    </developer>
-  </developers>
+    <developers>
+        <developer>
+            <name>Eric Lee</name>
+            <email>eric.lee@inetsoft.com</email>
+            <organization>InetSoft Technology</organization>
+        </developer>
+        <developer>
+            <name>Jason Shobe</name>
+            <email>jason.shobe@inetsoft.com</email>
+            <organization>InetSoft Technology</organization>
+        </developer>
+    </developers>
 
-  <scm>
-    <connection>scm:git:https://github.com/inetsoft-technology/spark-quickbooks.git</connection>
-    <developerConnection>scm:git:https://github.com/inetsoft-technology/spark-quickbooks.git</developerConnection>
-    <url>https://github.com/inetsoft-technology/spark-quickbooks/tree/master</url>
-    <tag>HEAD</tag>
-  </scm>
+    <scm>
+        <connection>scm:git:https://github.com/inetsoft-technology/spark-quickbooks.git</connection>
+        <developerConnection>scm:git:https://github.com/inetsoft-technology/spark-quickbooks.git</developerConnection>
+        <url>https://github.com/inetsoft-technology/spark-quickbooks/tree/master</url>
+        <tag>HEAD</tag>
+    </scm>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
-
-  <profiles>
-    <profile>
-      <id>release</id>
-      <build>
+    <build>
         <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-sources</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar-no-fork</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-          </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
-      </build>
-    </profile>
-  </profiles>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
 

@@ -6,10 +6,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="spark-quickbooks" />
         <module name="spark-quickbooks-api" />
         <module name="spark-quickbooks-runtime" />
         <module name="spark-quickbooks" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="spark-quickbooks (1)" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
