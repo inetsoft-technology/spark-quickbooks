@@ -9,7 +9,6 @@
         <module name="spark-quickbooks" />
         <module name="spark-quickbooks-api" />
         <module name="spark-quickbooks-runtime" />
-        <module name="spark-quickbooks" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
